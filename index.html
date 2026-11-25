@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CASO | Asistente virtual - Unidad Caso S.A.S.</title>
+<style>
+  :root{--ink:#111;--panel:#1b1b1b;--panel2:#252525;--line:#3c3c3c;--paper:#f4f4f4;--white:#fff;--muted:#bdbdbd;--accent:#d7d7d7;--user:#f0f0f0;--bot:#252525;--shadow:0 18px 60px rgba(0,0,0,.35)}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;background:radial-gradient(circle at 12% 10%,#343434 0,#181818 38%,#0c0c0c 100%);font-family:Inter,Segoe UI,Arial,sans-serif;color:var(--white);display:flex;align-items:center;justify-content:center;padding:28px}
+  .shell{width:min(1040px,100%);display:grid;grid-template-columns: .85fr 1.15fr;gap:22px;align-items:stretch}
+  .brand{padding:38px 30px;display:flex;flex-direction:column;justify-content:space-between;min-height:690px;border:1px solid #414141;border-radius:24px;background:linear-gradient(145deg,rgba(255,255,255,.06),rgba(255,255,255,.015));box-shadow:var(--shadow);position:relative;overflow:hidden}
+  .brand:before,.brand:after{content:"";position:absolute;border:1px solid rgba(255,255,255,.09);border-radius:50%;width:380px;height:380px;right:-250px;top:-100px}
+  .brand:after{width:450px;height:450px;right:-285px;top:-130px}
+  .brand-top,.brand-bottom{position:relative;z-index:1}
+  .mark{width:108px;height:108px;border:2px solid #e8e8e8;border-radius:50%;display:grid;place-items:center;margin-bottom:30px;background:#101010;box-shadow:0 0 0 7px rgba(255,255,255,.04)}
+  .mark svg{width:68px;height:68px}
+  .eyebrow{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#c7c7c7;margin:0 0 12px}
+  h1{font-family:Georgia,serif;font-weight:400;font-size:46px;line-height:1.02;margin:0 0 16px;letter-spacing:.5px}
+  .brand .lead{font-size:15px;line-height:1.7;color:#d0d0d0;max-width:360px;margin:0}
+  .pillars{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
+  .pillars span{font-size:11px;letter-spacing:1px;text-transform:uppercase;border:1px solid #555;padding:8px 10px;border-radius:99px;color:#ddd}
+  .brand-bottom{font-size:12px;line-height:1.8;color:#aaa}
+  .brand-bottom strong{color:#fff;font-weight:600}
+  .chat-card{background:#f3f3f3;color:#161616;border-radius:24px;box-shadow:var(--shadow);overflow:hidden;min-height:690px;display:flex;flex-direction:column;border:1px solid rgba(255,255,255,.2)}
+  .chat-head{background:#111;color:#fff;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #393939}
+  .head-left{display:flex;align-items:center;gap:12px}
+  .mini-mark{height:40px;width:40px;border:1px solid #aaa;border-radius:50%;display:grid;place-items:center;font-family:Georgia,serif;font-size:18px}
+  .head-title{font-weight:700;font-size:14px;letter-spacing:.7px}
+  .head-sub{font-size:11px;color:#bdbdbd;margin-top:3px}
+  .status{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#cfcfcf;display:flex;align-items:center;gap:7px}
+  .status:before{content:"";width:7px;height:7px;background:#b9b9b9;border-radius:50%;display:inline-block}
+  .chat-body{padding:20px 20px 10px;overflow-y:auto;flex:1;min-height:0;max-height:530px;scroll-behavior:smooth}
+  .dayline{text-align:center;font-size:10px;color:#858585;letter-spacing:1.3px;text-transform:uppercase;margin:2px 0 18px}
+  .message{display:flex;margin:10px 0;gap:8px;align-items:flex-end;animation:pop .18s ease-out}
+  @keyframes pop{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+  .message.user{justify-content:flex-end}
+  .bubble{max-width:min(82%,520px);padding:12px 14px;border-radius:15px;font-size:13px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere}
+  .bot .bubble{background:#fff;border:1px solid #e2e2e2;border-bottom-left-radius:4px;color:#202020}
+  .user .bubble{background:#dedede;border:1px solid #d3d3d3;border-bottom-right-radius:4px;color:#111}
+  .avatar{flex:0 0 25px;width:25px;height:25px;border-radius:50%;display:grid;place-items:center;font-size:10px;font-weight:700;background:#1a1a1a;color:white}
+  .user .avatar{display:none}
+  .choices{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0 15px 33px;max-width:92%}
+  .choice{border:1px solid #aaa;background:#fff;border-radius:99px;padding:9px 12px;font-size:12px;color:#1b1b1b;cursor:pointer;transition:.15s}
+  .choice:hover{background:#151515;color:#fff;border-color:#151515;transform:translateY(-1px)}
+  .choice.primary{background:#171717;color:#fff;border-color:#171717}
+  .choice.primary:hover{background:#444}
+  .contact-links{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 15px 33px}
+  .contact-links a{color:#111;background:#fff;border:1px solid #ccc;border-radius:9px;padding:9px 11px;text-decoration:none;font-size:12px}
+  .contact-links a:hover{background:#e6e6e6}
+  .chat-foot{border-top:1px solid #ddd;padding:12px 14px;background:#fafafa}
+  .input-row{display:flex;gap:8px}
+  #userInput{flex:1;min-width:0;border:1px solid #ccc;border-radius:12px;padding:12px 13px;font-size:13px;outline:none;background:#fff;color:#111}
+  #userInput:focus{border-color:#555;box-shadow:0 0 0 3px rgba(0,0,0,.06)}
+  #sendBtn{border:0;border-radius:12px;background:#111;color:#fff;padding:0 18px;font-weight:600;cursor:pointer}
+  #sendBtn:hover{background:#333}
+  .footnote{font-size:10px;color:#777;line-height:1.5;margin:9px 3px 0}
+  .reset{border:0;background:transparent;color:#ccc;font-size:11px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+  .warning{margin:12px 0 12px 33px;padding:10px 12px;border-left:3px solid #777;background:#e9e9e9;color:#333;font-size:11px;line-height:1.5;max-width:88%}
+  @media(max-width:800px){body{padding:12px}.shell{grid-template-columns:1fr;gap:12px}.brand{min-height:auto;padding:24px;border-radius:18px}.brand h1{font-size:37px}.brand .lead{max-width:unset}.brand-bottom{margin-top:30px}.chat-card{min-height:640px;border-radius:18px}.chat-body{max-height:450px}}
+  @media(max-width:420px){.status{display:none}.chat-body{padding:15px 12px 8px}.bubble{max-width:88%;font-size:12px}.choices,.contact-links,.warning{margin-left:28px}.chat-head{padding:15px}.chat-foot{padding:10px}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="brand">
+    <div class="brand-top">
+      <div class="mark" aria-label="Símbolo de Unidad Caso">
+        <svg viewBox="0 0 100 100" fill="none" aria-hidden="true">
+          <path d="M12 50C24 34 37 27 50 27S76 34 88 50C76 66 63 73 50 73S24 66 12 50Z" stroke="white" stroke-width="4"/>
+          <circle cx="50" cy="50" r="17" stroke="white" stroke-width="4"/>
+          <circle cx="50" cy="50" r="6" fill="white"/>
+          <path d="M31 18L37 9H63L69 18M42 73V86H58V73" stroke="white" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <p class="eyebrow">Unidad Caso S.A.S.</p>
+      <h1>Protección<br>con propósito.</h1>
+      <p class="lead">Soluciones personalizadas en seguridad empresarial e investigaciones privadas. Un primer contacto claro, discreto y orientado a tus necesidades.</p>
+      <div class="pillars"><span>Compromiso</span><span>Dedicación</span><span>Integridad</span><span>Protección</span></div>
+    </div>
+    <div class="brand-bottom">
+      <strong>CASO</strong> · Asistente virtual de orientación<br>
+      Medellín, Colombia<br>
+      Este prototipo académico simula la atención inicial; no reemplaza al equipo especializado.
+    </div>
+  </aside>
+
+  <main class="chat-card" aria-label="Chat con CASO">
+    <header class="chat-head">
+      <div class="head-left">
+        <div class="mini-mark">UC</div>
+        <div><div class="head-title">CASO | ASISTENTE VIRTUAL</div><div class="head-sub">Unidad Caso S.A.S. · Orientación inicial</div></div>
+      </div>
+      <div class="status">Prototipo activo</div>
+    </header>
+    <section class="chat-body" id="chatBody" aria-live="polite">
+      <div class="dayline">Inicio de conversación</div>
+    </section>
+    <footer class="chat-foot">
+      <form class="input-row" id="chatForm">
+        <input id="userInput" type="text" autocomplete="off" placeholder="Escribe tu consulta aquí…" aria-label="Escribe tu consulta" />
+        <button id="sendBtn" type="submit">Enviar</button>
+      </form>
+      <div class="footnote">Prototipo académico: los mensajes se procesan solo en esta página y no se envían ni almacenan en Unidad Caso. No compartas datos sensibles, documentos, pruebas ni información de terceros.</div>
+    </footer>
+  </main>
+</div>
+<script>
+(() => {
+  const body = document.getElementById('chatBody');
+  const form = document.getElementById('chatForm');
+  const input = document.getElementById('userInput');
+  let pendingTextHandler = null;
+  let request = {};
+
+  const serviceDetails = {
+    'Seguridad empresarial y cultura de seguridad': 'Acompañamiento en seguridad empresarial y fortalecimiento de la cultura de seguridad.',
+    'Estudios de seguridad y apoyo a selección': 'Estudios de seguridad y apoyo a procesos de selección.',
+    'Antecedentes y verificación documental': 'Consultas de antecedentes y verificación documental, sujetas a finalidad legítima y validación del equipo.',
+    'Investigaciones, vigilancia y seguimiento': 'Actividades investigativas, vigilancia y seguimiento específico a personas y automotores, previa evaluación del alcance y viabilidad.',
+    'Localización de personas y análisis de activos': 'Servicios de localización de personas y análisis de activos, sujetos a revisión del caso y de su viabilidad.',
+    'Recuperación de vehículos': 'Orientación sobre el servicio de recuperación de vehículos.',
+    'Pruebas de poligrafía': 'Aplicación de pruebas de la verdad (poligrafías).',
+    'CCTV y seguridad electrónica': 'Comercialización, instalación y mantenimiento de equipos de seguridad electrónica, CCTV y seguridad perimetral.',
+    'Seguridad y Salud en el Trabajo': 'Diseño, implementación y capacitación del Sistema de Seguridad y Salud en el Trabajo.',
+    'Consultoría y trámites ante D.C.C.A.E.': 'Consultorías y asesorías para trámites ante el D.C.C.A.E.'
+  };
+
+  function scrollDown(){ body.scrollTop = body.scrollHeight; }
+  function addMessage(text, who='bot'){
+    const row = document.createElement('div'); row.className = `message ${who}`;
+    if(who==='bot'){ const av=document.createElement('div'); av.className='avatar'; av.textContent='UC'; row.appendChild(av); }
+    const bubble=document.createElement('div'); bubble.className='bubble'; bubble.textContent=text; row.appendChild(bubble); body.appendChild(row); scrollDown();
+  }
+  function addWarning(text){ const el=document.createElement('div'); el.className='warning'; el.textContent=text; body.appendChild(el); scrollDown(); }
+  function addChoices(items, onChoose){
+    const wrap=document.createElement('div'); wrap.className='choices';
+    items.forEach((item,idx)=>{ const b=document.createElement('button'); b.type='button'; b.className='choice'+(idx===0?' primary':''); b.textContent=item; b.addEventListener('click',()=>{ wrap.remove(); addMessage(item,'user'); onChoose(item); }); wrap.appendChild(b); });
+    body.appendChild(wrap); scrollDown();
+  }
+  function addContactLinks(){
+    const wrap=document.createElement('div'); wrap.className='contact-links';
+    [['Llamar: +57 310 674 9656','tel:+573106749656'],['Enviar correo','mailto:INFO@UNIDADCASO.COM'],['Sitio web','https://www.unidadcasosas.com']].forEach(([label,href])=>{const a=document.createElement('a');a.textContent=label;a.href=href;if(href.startsWith('http')){a.target='_blank';a.rel='noopener noreferrer';}wrap.appendChild(a);});
+    body.appendChild(wrap); scrollDown();
+  }
+  function askText(question, placeholder, callback){
+    addMessage(question);
+    input.placeholder=placeholder||'Escribe tu respuesta…';
+    pendingTextHandler=(value)=>{ input.placeholder='Escribe tu consulta aquí…'; callback(value); };
+    input.focus();
+  }
+  function askChoice(question, options, callback){ addMessage(question); addChoices(options, callback); }
+  function menu(){
+    pendingTextHandler=null; request={};
+    addMessage('¿Cómo puedo orientarte hoy? Selecciona una opción para comenzar.');
+    addChoices(['Conocer nuestros servicios','Solicitar cotización o asesoría','Tengo una situación y necesito orientación','Contactar a un asesor'], choice=>{
+      if(choice==='Conocer nuestros servicios') servicesFlow();
+      else if(choice==='Solicitar cotización o asesoría') quoteFlow();
+      else if(choice==='Tengo una situación y necesito orientación') caseFlow();
+      else humanFlow();
+    });
+  }
+  function serviceList(){ return Object.keys(serviceDetails); }
+  function servicesFlow(){
+    askChoice('¿La consulta es para una empresa o para una persona?', ['Empresa','Persona','Aún no lo tengo definido'], audience=>{
+      request.audience=audience;
+      askChoice('¿Qué servicio te interesa conocer?', serviceList(), service=>{
+        request.service=service;
+        addMessage(serviceDetails[service]);
+        addMessage('El alcance, los requisitos y la viabilidad se confirman con el equipo especializado después de conocer la necesidad general.');
+        askChoice('¿Qué te gustaría hacer ahora?', ['Solicitar cotización o asesoría','Contactar a un asesor','Volver al menú'], next=>{
+          if(next==='Solicitar cotización o asesoría') quoteFlow(service);
+          else if(next==='Contactar a un asesor') humanFlow();
+          else menu();
+        });
+      });
+    });
+  }
+  function quoteFlow(preselected=''){
+    request={}; request.service=preselected;
+    if(preselected){ continueQuote(); return; }
+    askChoice('¿Sobre cuál servicio deseas recibir orientación comercial?', serviceList(), service=>{request.service=service;continueQuote();});
+  }
+  function continueQuote(){
+    addMessage('Perfecto. Te haré unas preguntas generales para organizar la solicitud. Esto no constituye una cotización definitiva.');
+    askChoice('¿La solicitud corresponde a una empresa o a una persona?', ['Empresa','Persona'], audience=>{
+      request.audience=audience;
+      askText('¿En qué ciudad o municipio se requiere el servicio?','Ej. Medellín',city=>{
+        request.city=city;
+        askText('Describe brevemente el objetivo de la solicitud, sin incluir nombres de terceros, números de identificación, direcciones exactas ni pruebas.','Describe la necesidad en términos generales…',summary=>{
+          request.summary=summary;
+          addMessage('Gracias. La solicitud quedaría organizada así:\n• Tipo de cliente: '+request.audience+'\n• Servicio: '+request.service+'\n• Ciudad: '+request.city+'\n• Objetivo general: '+request.summary);
+          addWarning('En este prototipo la información no se transmite ni se guarda. En una implementación real, Unidad Caso deberá informar la finalidad del tratamiento y obtener la autorización correspondiente antes de recolectar datos personales.');
+          askChoice('¿Deseas comunicarte directamente con Unidad Caso para continuar?', ['Sí, mostrar canales de contacto','Volver al menú'], next=>{if(next==='Sí, mostrar canales de contacto') humanFlow();else menu();});
+        });
+      });
+    });
+  }
+  function caseFlow(){
+    addWarning('Por seguridad y confidencialidad, no escribas aquí nombres de personas investigadas, números de documento, direcciones, placas, datos financieros, información médica, fotografías, archivos ni detalles que puedan identificar a terceros.');
+    askChoice('¿Qué tipo de situación deseas orientar?', ['Posible hurto o fraude','Verificación documental o de antecedentes','Situación relacionada con un vehículo','Necesidad de vigilancia o investigación','Otra situación'], type=>{
+      request.caseType=type;
+      askChoice('¿Cuál es tu objetivo principal?', ['Prevenir o reducir un riesgo','Solicitar una evaluación del caso','Conocer un servicio disponible','Hablar con un asesor'], goal=>{
+        addMessage('Entendido. Para una evaluación responsable, el equipo especializado debe revisar el contexto, la finalidad y la viabilidad del servicio. CASO no determina responsabilidades, no verifica hechos ni inicia investigaciones.');
+        if(goal==='Hablar con un asesor') humanFlow();
+        else askChoice('¿Quieres que te mostremos los canales oficiales para ampliar tu solicitud?', ['Sí, mostrar canales','Volver al menú'], next=>{if(next==='Sí, mostrar canales') humanFlow();else menu();});
+      });
+    });
+  }
+  function humanFlow(){
+    addMessage('Puedes comunicarte directamente con Unidad Caso S.A.S. a través de los canales publicados en su brochure:');
+    addContactLinks();
+    addMessage('Cuando contactes al equipo, comparte únicamente la información necesaria por el canal que la empresa indique. No envíes pruebas o documentos sensibles a este prototipo.');
+    addChoices(['Volver al menú','Finalizar conversación'],next=>{if(next==='Volver al menú') menu();else addMessage('Gracias por comunicarte con CASO. En Unidad Caso trabajamos para proteger lo que más valoras.');});
+  }
+  function freeText(text){
+    const t=text.toLowerCase();
+    if(/servicio|qué hacen|que hacen|ofrecen|portafolio|cctv|poligraf|antecedent|selección|seleccion|seguridad empresarial|vigilancia/.test(t)) servicesFlow();
+    else if(/cotiz|precio|valor|asesor[ií]a|propuesta|contratar/.test(t)) quoteFlow();
+    else if(/hurto|fraude|robo|estafa|veh[ií]culo|investig|persona desaparecida|localizar/.test(t)) caseFlow();
+    else if(/contact|tel[eé]fono|correo|email|llamar|asesor|humano/.test(t)) humanFlow();
+    else {
+      addMessage('No logré identificar con seguridad lo que necesitas. Puedo orientarte en servicios, solicitudes de cotización, situaciones generales o contacto con un asesor.');
+      addChoices(['Conocer nuestros servicios','Solicitar cotización o asesoría','Tengo una situación y necesito orientación','Contactar a un asesor'],choice=>{if(choice==='Conocer nuestros servicios')servicesFlow();else if(choice==='Solicitar cotización o asesoría')quoteFlow();else if(choice==='Tengo una situación y necesito orientación')caseFlow();else humanFlow();});
+    }
+  }
+  form.addEventListener('submit',e=>{
+    e.preventDefault(); const text=input.value.trim(); if(!text)return; input.value=''; addMessage(text,'user');
+    if(pendingTextHandler){const handler=pendingTextHandler;pendingTextHandler=null;handler(text);}else freeText(text);
+  });
+  // Inicio de conversación
+  addMessage('Hola, soy CASO, el asistente virtual de Unidad Caso S.A.S. Estoy aquí para orientarte sobre nuestros servicios de seguridad empresarial e investigaciones privadas.');
+  addMessage('Puedo ayudarte a identificar el servicio adecuado y mostrarte cómo contactar al equipo. No sustituyo la evaluación de un profesional.');
+  menu();
+})();
+</script>
+</body>
+</html>
